@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, height=device-height,
+               initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Yes or No</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            height: 100dvh;
+            background: linear-gradient(135deg, hotpink, crimson);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin: 20px 10px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: calc(100dvh - 80px);
+            overflow: hidden;
+        }
+
+        #yesBtn, #noBtn {
+            position: absolute;
+            padding: 14px 36px;
+            font-size: 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            white-space: nowrap;
+            z-index: 3;
+        }
+
+        #yesBtn {
+            background: white;
+            color: crimson;
+            left: 18%;
+            top: 40%;
+        }
+
+        #noBtn {
+            background: black;
+            color: white;
+            left: 60%;
+            top: 40%;
+        }
+
+        /* POPUP */
+        .popup {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .popup-box {
+            background: white;
+            padding: 55px;
+            border-radius: 20px;
+            text-align: center;
+            animation: pop 0.4s ease;
+        }
+
+        .popup-box h1 {
+            color: crimson;
+            margin: 0;
+        }
+
+        @keyframes pop {
+            from { transform: scale(0.6); }
+            to { transform: scale(1); }
+        }
+
+        /* CONFETTI */
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: red;
+            top: -10px;
+            animation: fall 3s linear forwards;
+            z-index: 9;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* HEART BALLOONS */
+        .heart {
+            position: fixed;
+            bottom: -40px;
+            font-size: 24px;
+            animation: floatUp linear infinite;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(-120vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>WILL YOU BE MY VALENTINE 😘🥰🤗</h1>
+
+<div class="container" id="container">
+    <button id="yesBtn">YES</button>
+    <button id="noBtn">NO</button>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+    <div class="popup-box">
+        <h1>🎉 Congrats! 🎉</h1>
+        <h3>You made the right choice ❤️</h3>
+        <h3>ummahh...👄</h3>
+    </div>
+</div>
+
+<script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const container = document.getElementById("container");
+    const popup = document.getElementById("popup");
+
+    /* NO button movement */
+    function moveNoButton() {
+        const cW = container.clientWidth;
+        const cH = container.clientHeight;
+        const bW = noBtn.offsetWidth;
+        const bH = noBtn.offsetHeight;
+        const yRect = yesBtn.getBoundingClientRect();
+        const cRect = container.getBoundingClientRect();
+        const padding = 10;
+
+        let x, y, overlap;
+        do {
+            x = Math.random() * (cW - bW - padding * 2) + padding;
+            y = Math.random() * (cH - bH - padding * 2) + padding;
+
+            const absX = cRect.left + x;
+            const absY = cRect.top + y;
+
+            overlap = !(
+                absX + bW < yRect.left ||
+                absX > yRect.right ||
+                absY + bH < yRect.top ||
+                absY > yRect.bottom
+            );
+        } while (overlap);
+
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+    }
+
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("touchstart", e => {
+        e.preventDefault();
+        moveNoButton();
+    });
+
+    /* YES click */
+    yesBtn.addEventListener("click", () => {
+        popup.style.display = "flex";
+        launchConfetti();
+    });
+
+    /* CONFETTI */
+    function launchConfetti() {
+        for (let i = 0; i < 80; i++) {
+            const c = document.createElement("div");
+            c.className = "confetti";
+            c.style.left = Math.random() * 100 + "vw";
+            c.style.background =
+                `hsl(${Math.random() * 360},100%,50%)`;
+            c.style.animationDuration =
+                2 + Math.random() * 2 + "s";
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 4000);
+        }
+    }
+
+    /* HEART BALLOONS */
+    function createHeart() {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.innerHTML = "❤️";
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.fontSize = 20 + Math.random() * 20 + "px";
+        h.style.animationDuration =
+            6 + Math.random() * 4 + "s";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 10000);
+    }
+
+    setInterval(createHeart, 600);
+</script>
+
+</body>
+</html>
